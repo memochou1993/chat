@@ -31,7 +31,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		log.Println(err.Error())
 	}
 
-	log.Println("Connected...")
+	log.Println("Successfully Connected...")
 
 	render(conn)
 }
