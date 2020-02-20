@@ -1,10 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from './components/Header';
+import History from './components/History';
 import { connect, sendMessage } from './api';
 
 const App = () => {
+  const [messages, setMessages] = useState([]);
+
   useEffect(() => {
-    connect();
+    connect((message) => {
+      setMessages(prevState => {
+        return [...prevState, message];
+      });
+    });
   }, []);
 
   const send = () => {
@@ -14,7 +21,14 @@ const App = () => {
   return (
     <div className="App">
       <Header />
-      <button onClick={send}>Hit</button>
+      <button
+        onClick={ send }
+      >
+        Send
+      </button>
+      <History
+        messages={ messages }
+      />
     </div>
   );
 };
