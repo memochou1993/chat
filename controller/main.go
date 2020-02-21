@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/memochou1993/chat/pkg/websocket"
+	"github.com/memochou1993/chat/plugins/websocket"
 )
 
 // Handler func
