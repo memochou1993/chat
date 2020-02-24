@@ -7,6 +7,14 @@ import (
 	"github.com/memochou1993/chat/plugins/websocket"
 )
 
+var (
+	pool = websocket.NewPool()
+)
+
+func init() {
+	go pool.Start()
+}
+
 // Handler func
 func Handler(w http.ResponseWriter, r *http.Request) {
 	conn, err := websocket.Upgrade(w, r)
@@ -15,7 +23,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	go websocket.Handle(conn)
+	client := websocket.NewClient(conn, pool)
 
-	log.Println("Successfully Connected...")
+	pool.Register <- client
+
+	client.Read()
 }
