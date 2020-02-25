@@ -9,9 +9,9 @@ const App = () => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    connect((message) => {
-      setMessages(prevState => {
-        return [...prevState, message];
+    connect((state) => {
+      setMessages((prevState) => {
+        return [...prevState, state];
       });
     });
   }, []);

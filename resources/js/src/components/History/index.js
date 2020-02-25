@@ -1,17 +1,19 @@
-import React from "react";
-import "./style.scss";
+import React from 'react';
+import './style.scss';
 
 const History = (props) => {
   return (
     <div className="History">
       {
-        props.messages.map((message, index) => (
-          <p
-            key={index}
-          >
-            {message.data}
-          </p>
-        ))
+        props.messages.map((message, index) => {
+          return (
+            <p
+              key={index}
+            >
+              {message.data}
+            </p>
+          );
+        })
       }
     </div>
   );
