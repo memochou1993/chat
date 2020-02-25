@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Header from './components/Header';
 import History from './components/History';
+import Input from './components/Input';
 import { connect, send } from './api';
 
 const App = () => {
@@ -18,6 +19,13 @@ const App = () => {
     send('Hello!');
   };
 
+  const handleKeyDown = (event) => {
+    if (event.keyCode === 13) {
+      send(event.target.value);
+      event.target.value = "";
+    }
+  };
+
   return (
     <div className="App">
       <Header />
@@ -28,6 +36,9 @@ const App = () => {
       </button>
       <History
         messages={messages}
+      />
+      <Input
+        onKeyDown={handleKeyDown}
       />
     </div>
   );

@@ -22,7 +22,6 @@ const connect = (callback) => {
 };
 
 const send = (message) => {
-  console.log('Sending Message: ', message);
   socket.send(message);
 };
 
