@@ -4,9 +4,14 @@ import "./style.scss";
 const Input = (props) => {
   return (
     <div className="Input">
-      <input
-        onKeyDown={props.onKeyDown}
-      />
+      <form
+        onSubmit={props.submit}
+      >
+        <input
+          value={props.value}
+          onChange={props.onChange}
+        />
+      </form>
     </div>
   );
 };

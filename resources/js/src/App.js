@@ -5,6 +5,7 @@ import Input from './components/Input';
 import { connect, send } from './api';
 
 const App = () => {
+  const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -15,30 +16,26 @@ const App = () => {
     });
   }, []);
 
-  const handleClick = () => {
-    send('Hello!');
+  const handleSubmit = (event) => {
+    send(message);
+    setMessage('');
+    event.preventDefault();
   };
 
-  const handleKeyDown = (event) => {
-    if (event.keyCode === 13) {
-      send(event.target.value);
-      event.target.value = "";
-    }
+  const handleChange = (event) => {
+    setMessage(event.target.value);
   };
 
   return (
     <div className="App">
       <Header />
-      <button
-        onClick={handleClick}
-      >
-        Send
-      </button>
       <History
         messages={messages}
       />
       <Input
-        onKeyDown={handleKeyDown}
+        submit={handleSubmit}
+        value={message}
+        onChange={handleChange}
       />
     </div>
   );
