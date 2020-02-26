@@ -23,7 +23,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	client := websocket.NewClient(conn, pool)
+	client := websocket.NewClient(r, conn, pool)
 
 	pool.Register <- client
 
