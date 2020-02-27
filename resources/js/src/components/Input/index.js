@@ -8,8 +8,9 @@ const Input = (props) => {
         onSubmit={props.submit}
       >
         <input
-          value={props.value}
+          autoFocus
           onChange={props.onChange}
+          value={props.value}
         />
       </form>
     </div>

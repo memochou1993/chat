@@ -7,11 +7,12 @@ const History = (props) => {
       {
         props.messages.map((message, index) => {
           return (
-            <p
+            <div
               key={index}
+              className="alert alert-primary"
             >
               {message.data}
-            </p>
+            </div>
           );
         })
       }

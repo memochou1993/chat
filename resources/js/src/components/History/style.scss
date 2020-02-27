@@ -1,3 +1,10 @@
 .History {
-  padding: 20px;
+  padding: 20px 50px;
+
+  .alert {
+    margin: 1rem 0;
+    padding: .25rem 1.25rem;
+    width: 400px;
+    word-break: break-all;
+  }
 }

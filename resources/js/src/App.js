@@ -19,8 +19,10 @@ const App = () => {
   }, []);
 
   const handleSubmit = (event) => {
-    send(message);
-    setMessage('');
+    if (message) {
+      send(message);
+      setMessage('');
+    }
     event.preventDefault();
   };
 
@@ -31,7 +33,7 @@ const App = () => {
   return (
     <div className="App">
       <div
-        className="container-fulid"
+        className="container-fulid bg-light"
       >
         <div
           id="header"
@@ -40,6 +42,7 @@ const App = () => {
         </div>
         <div
           id="body"
+          className="overflow-auto"
         >
           <History
             messages={messages}
