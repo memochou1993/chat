@@ -4,16 +4,16 @@ body,
 .App,
 .container-fulid {
   height: 100%;
-}
 
-#header {
-  height: 10%;
-}
-
-#body {
-  height: 80%;
-}
-
-#footer {
-  height: 10%;
+  #header {
+    height: 8%;
+  }
+  
+  #body {
+    height: 82%;
+  }
+  
+  #footer {
+    height: 10%;
+  }
 }

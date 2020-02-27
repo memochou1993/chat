@@ -6,9 +6,11 @@ const Header = () => {
     <div
       className="Header"
     >
-      <h2>
+      <div
+        id="title"
+      >
         Chat App
-      </h2>
+      </div>
     </div>
   );
 };

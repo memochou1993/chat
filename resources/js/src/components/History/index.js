@@ -3,7 +3,9 @@ import './style.scss';
 
 const History = (props) => {
   return (
-    <div className="History">
+    <div
+      className="History"
+    >
       {
         props.messages.map((message, index) => {
           return (
