@@ -3,6 +3,8 @@ import Header from './components/Header';
 import History from './components/History';
 import Input from './components/Input';
 import { connect, send } from './api';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 
 const App = () => {
   const [message, setMessage] = useState('');
@@ -28,15 +30,31 @@ const App = () => {
 
   return (
     <div className="App">
-      <Header />
-      <History
-        messages={messages}
-      />
-      <Input
-        submit={handleSubmit}
-        value={message}
-        onChange={handleChange}
-      />
+      <div
+        className="container-fulid"
+      >
+        <div
+          id="header"
+        >
+          <Header />
+        </div>
+        <div
+          id="body"
+        >
+          <History
+            messages={messages}
+          />
+        </div>
+        <div
+          id="footer"
+        >
+          <Input
+            submit={handleSubmit}
+            value={message}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
     </div>
   );
 };
