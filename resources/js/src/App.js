@@ -4,7 +4,7 @@ import History from './components/History';
 import Input from './components/Input';
 import { connect, send } from './api';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import './App.scss';
 
 const App = () => {
   const [message, setMessage] = useState('');
