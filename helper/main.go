@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"log"
 	"net"
 	"net/http"
 	"strings"
@@ -8,13 +9,13 @@ import (
 
 // GetHost func
 func GetHost(r *http.Request) string {
+	// TEMP
 	// host := r.URL.Query().Get("host")
 
-	// return host
-
-	if host, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr)); err == nil {
-		return host
+	if host, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr)); err != nil {
+		log.Println(err)
+		return ""
 	}
 
-	return ""
+	return host
 }

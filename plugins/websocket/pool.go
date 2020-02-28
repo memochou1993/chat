@@ -1,7 +1,6 @@
 package websocket
 
 import (
-	"fmt"
 	"log"
 )
 
@@ -19,9 +18,9 @@ type Pool struct {
 // NewPool func
 func NewPool() *Pool {
 	return &Pool{
-		Rooms:            []*Room{},        // New
-		RoomRegister:     make(chan *Room), // New
-		RoomUnregister:   make(chan *Room), // New
+		Rooms:            []*Room{},
+		RoomRegister:     make(chan *Room),
+		RoomUnregister:   make(chan *Room),
 		Clients:          make(map[*Client]bool),
 		ClientRegister:   make(chan *Client),
 		ClientUnregister: make(chan *Client),
@@ -35,36 +34,51 @@ func (pool *Pool) Start() {
 		select {
 		case room := <-pool.RoomRegister:
 			pool.Rooms = append(pool.Rooms, room)
-			fmt.Println("Number of rooms: ", len(pool.Rooms))
 			break
 
 		case <-pool.RoomUnregister:
-			pool.Rooms = pool.Rooms[1:len(pool.Rooms)]
-			fmt.Println("Number of rooms: ", len(pool.Rooms))
+			pool.Rooms = pool.Rooms[1:]
 			break
 
 		case client := <-pool.ClientRegister:
 			pool.Clients[client] = true
-			fmt.Println("Number of clients: ", len(pool.Clients))
-			// for client := range pool.Clients {
-			// 	client.Conn.WriteJSON(Message{Type: 1, Body: "User Connected..."})
-			// }
+			message := &Message{
+				Type: 1,
+				Body: "User has joined the conversation.",
+			}
+			notify(pool, client, message)
 			break
 
 		case client := <-pool.ClientUnregister:
 			delete(pool.Clients, client)
-			fmt.Println("Number of clients: ", len(pool.Clients))
-			// for client := range pool.Clients {
-			// 	client.Conn.WriteJSON(Message{Type: 1, Body: "User Disconnected..."})
-			// }
+			message := &Message{
+				Type: 1,
+				Body: "User has left the conversation.",
+			}
+			notify(pool, client, message)
 			break
 
 		case message := <-pool.Broadcast:
-			for client := range pool.Clients {
-				if err := client.Conn.WriteJSON(message); err != nil {
-					log.Println(err)
-					return
-				}
+			broadcast(pool, message)
+		}
+	}
+}
+
+func notify(pool *Pool, c *Client, message *Message) {
+	for client := range pool.Clients {
+		if client.Room.ID == c.Room.ID && client.ID != c.ID {
+			if err := client.Conn.WriteJSON(message); err != nil {
+				log.Println(err)
+			}
+		}
+	}
+}
+
+func broadcast(pool *Pool, message Message) {
+	for client := range pool.Clients {
+		if client.Room.ID == message.RoomID {
+			if err := client.Conn.WriteJSON(message); err != nil {
+				log.Println(err)
 			}
 		}
 	}
