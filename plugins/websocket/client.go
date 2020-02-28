@@ -1,40 +1,51 @@
 package websocket
 
 import (
-	"encoding/base64"
 	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
-	"github.com/memochou1993/chat/helper"
 )
 
 // Client struct
 type Client struct {
 	ID   string
+	Room *Room
 	Conn *websocket.Conn
 	Pool *Pool
 }
 
 // Message struct
 type Message struct {
-	Type int    `json:"type"`
-	Body string `json:"body"`
+	RoomID   string `json:"roomId"`
+	ClientID string `json:"clientId"`
+	Type     int    `json:"type"`
+	Body     string `json:"body"`
 }
 
 // NewClient func
-func NewClient(r *http.Request, conn *websocket.Conn, pool *Pool) *Client {
+func NewClient(r *http.Request, room *Room, conn *websocket.Conn, pool *Pool) *Client {
+	id, err := uuid.NewRandom()
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	return &Client{
-		ID:   base64.StdEncoding.EncodeToString([]byte(helper.GetHost(r))),
+		// ID:   base64.StdEncoding.EncodeToString([]byte(helper.GetHost(r))),
+		ID:   id.String(),
+		Room: room,
 		Conn: conn,
 		Pool: pool,
 	}
 }
 
+// Read func
 func (c *Client) Read() {
 	defer func() {
-		c.Pool.Unregister <- c
+		c.Pool.ClientUnregister <- c
 		c.Conn.Close()
 	}()
 
@@ -46,7 +57,12 @@ func (c *Client) Read() {
 			return
 		}
 
-		message := Message{Type: messageType, Body: string(p)}
+		message := Message{
+			RoomID:   c.Room.ID,
+			ClientID: c.ID,
+			Type:     messageType,
+			Body:     string(p),
+		}
 
 		c.Pool.Broadcast <- message
 

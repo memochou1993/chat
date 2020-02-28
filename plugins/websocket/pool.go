@@ -7,25 +7,25 @@ import (
 
 // Pool struct
 type Pool struct {
-	Register   chan *Client
-	Unregister chan *Client
-	Clients    map[*Client]bool
-	Broadcast  chan Message
-}
-
-// Payload struct
-type Payload struct {
-	ClientID string
-	Message  *Message
+	Rooms            []*Room
+	RoomRegister     chan *Room
+	RoomUnregister   chan *Room
+	Clients          map[*Client]bool
+	ClientRegister   chan *Client
+	ClientUnregister chan *Client
+	Broadcast        chan Message
 }
 
 // NewPool func
 func NewPool() *Pool {
 	return &Pool{
-		Register:   make(chan *Client),
-		Unregister: make(chan *Client),
-		Clients:    make(map[*Client]bool),
-		Broadcast:  make(chan Message),
+		Rooms:            []*Room{},        // New
+		RoomRegister:     make(chan *Room), // New
+		RoomUnregister:   make(chan *Room), // New
+		Clients:          make(map[*Client]bool),
+		ClientRegister:   make(chan *Client),
+		ClientUnregister: make(chan *Client),
+		Broadcast:        make(chan Message),
 	}
 }
 
@@ -33,32 +33,35 @@ func NewPool() *Pool {
 func (pool *Pool) Start() {
 	for {
 		select {
-		case client := <-pool.Register:
+		case room := <-pool.RoomRegister:
+			pool.Rooms = append(pool.Rooms, room)
+			fmt.Println("Number of rooms: ", len(pool.Rooms))
+			break
+
+		case <-pool.RoomUnregister:
+			pool.Rooms = pool.Rooms[1:len(pool.Rooms)]
+			fmt.Println("Number of rooms: ", len(pool.Rooms))
+			break
+
+		case client := <-pool.ClientRegister:
 			pool.Clients[client] = true
-			fmt.Println("Size of Connection Pool: ", len(pool.Clients))
+			fmt.Println("Number of clients: ", len(pool.Clients))
 			for client := range pool.Clients {
 				client.Conn.WriteJSON(Message{Type: 1, Body: "User Connected..."})
 			}
 			break
 
-		case client := <-pool.Unregister:
+		case client := <-pool.ClientUnregister:
 			delete(pool.Clients, client)
-			fmt.Println("Size of Connection Pool: ", len(pool.Clients))
+			fmt.Println("Number of clients: ", len(pool.Clients))
 			for client := range pool.Clients {
 				client.Conn.WriteJSON(Message{Type: 1, Body: "User Disconnected..."})
 			}
 			break
 
 		case message := <-pool.Broadcast:
-			fmt.Println("Sending message to all clients in Pool")
-
 			for client := range pool.Clients {
-				payload := &Payload{
-					ClientID: client.ID,
-					Message:  &message,
-				}
-
-				if err := client.Conn.WriteJSON(payload); err != nil {
+				if err := client.Conn.WriteJSON(message); err != nil {
 					log.Println(err)
 					return
 				}
