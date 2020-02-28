@@ -1,6 +1,7 @@
 package websocket
 
 import (
+	"fmt"
 	"log"
 )
 
@@ -34,28 +35,30 @@ func (pool *Pool) Start() {
 		select {
 		case room := <-pool.RoomRegister:
 			pool.Rooms = append(pool.Rooms, room)
+			fmt.Println("Number of rooms: ", len(pool.Rooms))
 			break
 
 		case <-pool.RoomUnregister:
 			pool.Rooms = pool.Rooms[1:]
+			fmt.Println("Number of rooms: ", len(pool.Rooms))
 			break
 
 		case client := <-pool.ClientRegister:
-			pool.Clients[client] = true
 			message := &Message{
 				Type: 1,
 				Body: "User has joined the conversation.",
 			}
+			pool.Clients[client] = true
 			notify(pool, client, message)
 			break
 
 		case client := <-pool.ClientUnregister:
-			delete(pool.Clients, client)
 			message := &Message{
 				Type: 1,
 				Body: "User has left the conversation.",
 			}
 			notify(pool, client, message)
+			delete(pool.Clients, client)
 			break
 
 		case message := <-pool.Broadcast:
@@ -65,21 +68,41 @@ func (pool *Pool) Start() {
 }
 
 func notify(pool *Pool, c *Client, message *Message) {
+	self := 0
+
 	for client := range pool.Clients {
-		if client.Room.ID == c.Room.ID && client.ID != c.ID {
-			if err := client.Conn.WriteJSON(message); err != nil {
-				log.Println(err)
-			}
+		if client.ID == c.ID {
+			self++
+		}
+
+		if self > 1 {
+			return
+		}
+	}
+
+	for client := range pool.Clients {
+		if client.Room.ID != c.Room.ID {
+			continue
+		}
+
+		if client.ID == c.ID {
+			continue
+		}
+
+		if err := client.Conn.WriteJSON(message); err != nil {
+			log.Println(err)
 		}
 	}
 }
 
 func broadcast(pool *Pool, message Message) {
 	for client := range pool.Clients {
-		if client.Room.ID == message.RoomID {
-			if err := client.Conn.WriteJSON(message); err != nil {
-				log.Println(err)
-			}
+		if client.Room.ID != message.RoomID {
+			continue
+		}
+
+		if err := client.Conn.WriteJSON(message); err != nil {
+			log.Println(err)
 		}
 	}
 }
