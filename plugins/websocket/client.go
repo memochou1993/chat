@@ -3,9 +3,7 @@ package websocket
 import (
 	"fmt"
 	"log"
-	"net/http"
 
-	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -26,16 +24,9 @@ type Message struct {
 }
 
 // NewClient func
-func NewClient(r *http.Request, room *Room, conn *websocket.Conn, pool *Pool) *Client {
-	id, err := uuid.NewRandom()
-
-	if err != nil {
-		log.Println(err)
-	}
-
+func NewClient(pool *Pool, conn *websocket.Conn, room *Room, clientID string) *Client {
 	return &Client{
-		// ID:   base64.StdEncoding.EncodeToString([]byte(helper.GetHost(r))),
-		ID:   id.String(),
+		ID:   clientID,
 		Room: room,
 		Conn: conn,
 		Pool: pool,
