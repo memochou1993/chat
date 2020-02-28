@@ -4,15 +4,25 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"strings"
+
+	_ "github.com/joho/godotenv/autoload" // initialize
+)
+
+var (
+	env = os.Getenv("APP_ENV")
 )
 
 // GetHost func
 func GetHost(r *http.Request) string {
-	// TEMP
-	// host := r.URL.Query().Get("host")
+	if env == "local" {
+		return r.URL.Query().Get("host")
+	}
 
-	if host, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr)); err != nil {
+	host, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr))
+
+	if err != nil {
 		log.Println(err)
 		return ""
 	}
