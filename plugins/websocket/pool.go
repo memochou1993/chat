@@ -13,6 +13,12 @@ type Pool struct {
 	Broadcast  chan Message
 }
 
+// Payload struct
+type Payload struct {
+	ClientID string
+	Message  *Message
+}
+
 // NewPool func
 func NewPool() *Pool {
 	return &Pool{
@@ -45,8 +51,14 @@ func (pool *Pool) Start() {
 
 		case message := <-pool.Broadcast:
 			fmt.Println("Sending message to all clients in Pool")
+
 			for client := range pool.Clients {
-				if err := client.Conn.WriteJSON(message); err != nil {
+				payload := &Payload{
+					ClientID: client.ID,
+					Message:  &message,
+				}
+
+				if err := client.Conn.WriteJSON(payload); err != nil {
 					log.Println(err)
 					return
 				}
