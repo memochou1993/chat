@@ -2,9 +2,6 @@
   padding: 10px 50px;
 
   .alert {
-    margin: 16px 0;
-    width: 400px;
-    word-break: break-all;
     box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.25);
   }
 }
@@ -12,9 +9,5 @@
 @media screen and (max-width: 767px) {
   .History {
     padding: 5px 30px;
-
-    .alert {
-      width: 200px;
-    }
   }
 }

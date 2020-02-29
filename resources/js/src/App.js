@@ -9,11 +9,18 @@ import './style.scss';
 const App = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [self, setSelf] = useState('');
 
   useEffect(() => {
     connect((state) => {
       setMessages((prevState) => {
-        return [...prevState, state];
+        const data = JSON.parse(state.data);
+
+        if (!data.roomId) {
+          setSelf(data.clientId);
+        }
+
+        return [...prevState, data];
       });
     });
   }, []);
@@ -45,6 +52,7 @@ const App = () => {
           className="overflow-auto"
         >
           <History
+            self={self}
             messages={messages}
           />
         </div>
