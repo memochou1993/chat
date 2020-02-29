@@ -9,18 +9,26 @@ import './style.scss';
 const App = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const [self, setSelf] = useState('');
+  const [clientId, setClientId] = useState('');
 
   useEffect(() => {
     connect((state) => {
-      setMessages((prevState) => {
-        const data = JSON.parse(state.data);
+      const effectMessage = JSON.parse(state.data);
 
-        if (!data.roomId) {
-          setSelf(data.clientId);
+      if (!effectMessage.roomId) {
+        const effectClientId = process.env.REACT_APP_ENV === 'local'
+          ? btoa((new URLSearchParams(window.location.search)).get('host'))
+          : effectMessage.clientId;
+
+        setClientId(effectClientId);
+
+        if (effectClientId === effectMessage.clientId) {
+          return;
         }
+      }
 
-        return [...prevState, data];
+      setMessages((prevState) => {
+        return [...prevState, effectMessage];
       });
     });
   }, []);
@@ -52,7 +60,7 @@ const App = () => {
           className="overflow-auto"
         >
           <History
-            self={self}
+            clientId={clientId}
             messages={messages}
           />
         </div>

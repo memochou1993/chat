@@ -18,7 +18,7 @@ const History = (props) => {
                   className="col-md-6 offset-md-3"
                 >
                   <div
-                    className="alert alert-info text-center my-3 py-1"
+                    className="alert alert-warning text-center my-3 py-1"
                   >
                     {message.body}
                   </div>
@@ -27,7 +27,7 @@ const History = (props) => {
             );
           }
 
-          if (message.clientId === props.self) {
+          if (message.clientId === props.clientId) {
             return (
               <div
                 key={index}
@@ -37,7 +37,7 @@ const History = (props) => {
                   className="col-md-6 offset-md-6"
                 >
                   <div
-                    className="alert alert-primary my-3"
+                    className="alert alert-info my-3"
                   >
                     {message.body}
                   </div>
@@ -55,7 +55,7 @@ const History = (props) => {
                 className="col-md-6"
               >
                 <div
-                  className="alert alert-primary my-3"
+                  className="alert alert-success my-3"
                 >
                   {message.body}
                 </div>
