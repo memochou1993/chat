@@ -45,8 +45,9 @@ func (pool *Pool) Start() {
 
 		case client := <-pool.ClientRegister:
 			message := &Message{
-				Type: 1,
-				Body: "User has joined the conversation.",
+				ClientID: client.ID,
+				Type:     1,
+				Body:     "User has joined the conversation.",
 			}
 			pool.Clients[client] = true
 			notify(pool, client, message)
@@ -54,8 +55,9 @@ func (pool *Pool) Start() {
 
 		case client := <-pool.ClientUnregister:
 			message := &Message{
-				Type: 1,
-				Body: "User has left the conversation.",
+				ClientID: client.ID,
+				Type:     1,
+				Body:     "User has left the conversation.",
 			}
 			notify(pool, client, message)
 			delete(pool.Clients, client)
@@ -82,10 +84,6 @@ func notify(pool *Pool, c *Client, message *Message) {
 
 	for client := range pool.Clients {
 		if client.Room.ID != c.Room.ID {
-			continue
-		}
-
-		if client.ID == c.ID {
 			continue
 		}
 
