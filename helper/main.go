@@ -7,16 +7,29 @@ import (
 	"os"
 	"strings"
 
-	_ "github.com/joho/godotenv/autoload" // initialize
+	"github.com/joho/godotenv"
 )
 
-var (
-	env = os.Getenv("APP_ENV")
-)
+func init() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Missing .env file.")
+	}
+}
+
+// GetEnv func
+func GetEnv(name string) string {
+	env := os.Getenv(name)
+
+	if env == "" {
+		log.Fatalf("Environment variable not found: \"%s\".", name)
+	}
+
+	return env
+}
 
 // GetHost func
 func GetHost(r *http.Request) string {
-	if env == "local" {
+	if IsLocal() {
 		return r.URL.Query().Get("host")
 	}
 
@@ -28,4 +41,14 @@ func GetHost(r *http.Request) string {
 	}
 
 	return host
+}
+
+// IsLocal func
+func IsLocal() bool {
+	return GetEnv("APP_ENV") == "local"
+}
+
+// IsProduction func
+func IsProduction() bool {
+	return GetEnv("APP_ENV") == "production"
 }
