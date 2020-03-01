@@ -1,10 +1,13 @@
 package websocket
 
 import (
+	"encoding/base64"
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/gorilla/websocket"
+	"github.com/memochou1993/chat/helper"
 )
 
 // Client struct
@@ -33,8 +36,8 @@ func NewClient(pool *Pool, conn *websocket.Conn, room *Room, clientID string) *C
 	}
 }
 
-// Read func
-func (c *Client) Read() {
+// ReadMessage func
+func (c *Client) ReadMessage() {
 	defer func() {
 		c.Pool.ClientUnregister <- c
 		c.Conn.Close()
@@ -56,7 +59,12 @@ func (c *Client) Read() {
 		}
 
 		c.Pool.Broadcast <- message
-
-		fmt.Printf("Message Received: %+v\n", message)
 	}
+}
+
+// GetClientID func
+func GetClientID(r *http.Request) string {
+	id := fmt.Sprintf("%s: %s", helper.GetHost(r), helper.GetPlatform(r))
+
+	return base64.StdEncoding.EncodeToString([]byte(id))
 }

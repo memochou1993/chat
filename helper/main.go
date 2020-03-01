@@ -27,9 +27,18 @@ func GetEnv(name string) string {
 	return env
 }
 
+// GetPlatform func
+func GetPlatform(r *http.Request) string {
+	if !IsProduction() {
+		return r.URL.Query().Get("platform")
+	}
+
+	return r.Header.Get("User-Agent")
+}
+
 // GetHost func
 func GetHost(r *http.Request) string {
-	if IsLocal() {
+	if !IsProduction() {
 		return r.URL.Query().Get("host")
 	}
 

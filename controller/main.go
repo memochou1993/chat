@@ -1,11 +1,9 @@
 package controller
 
 import (
-	"encoding/base64"
 	"log"
 	"net/http"
 
-	"github.com/memochou1993/chat/helper"
 	"github.com/memochou1993/chat/plugins/websocket"
 )
 
@@ -25,7 +23,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	clientID := base64.StdEncoding.EncodeToString([]byte(helper.GetHost(r)))
+	clientID := websocket.GetClientID(r)
 
 	room := websocket.NewRoom(pool, clientID)
 
@@ -33,5 +31,5 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	pool.ClientRegister <- client
 
-	client.Read()
+	client.ReadMessage()
 }

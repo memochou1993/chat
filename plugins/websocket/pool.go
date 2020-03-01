@@ -1,7 +1,6 @@
 package websocket
 
 import (
-	"fmt"
 	"log"
 )
 
@@ -35,12 +34,10 @@ func (pool *Pool) Start() {
 		select {
 		case room := <-pool.RoomRegister:
 			pool.Rooms = append(pool.Rooms, room)
-			fmt.Println("Number of rooms: ", len(pool.Rooms))
 			break
 
 		case <-pool.RoomUnregister:
 			pool.Rooms = pool.Rooms[1:]
-			fmt.Println("Number of rooms: ", len(pool.Rooms))
 			break
 
 		case client := <-pool.ClientRegister:
