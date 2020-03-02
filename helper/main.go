@@ -7,14 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/joho/godotenv"
+	_ "github.com/joho/godotenv/autoload" // initialize
 )
-
-func init() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Missing .env file.")
-	}
-}
 
 // GetEnv func
 func GetEnv(name string) string {
