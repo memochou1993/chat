@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 
@@ -14,13 +13,6 @@ var (
 
 func init() {
 	go pool.Start()
-}
-
-// Index func
-func Index(w http.ResponseWriter, r *http.Request) {
-	if err := json.NewEncoder(w).Encode(nil); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
 }
 
 // Handler func

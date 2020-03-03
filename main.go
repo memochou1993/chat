@@ -8,8 +8,7 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", controller.Index)
-	http.HandleFunc("/api", controller.Handler)
+	http.HandleFunc("/", controller.Handler)
 
 	log.Fatal(http.ListenAndServe(":8082", nil))
 }
