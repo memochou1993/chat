@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -17,7 +18,9 @@ func init() {
 
 // Index func
 func Index(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "index.html")
+	if err := json.NewEncoder(w).Encode(nil); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // Handler func
