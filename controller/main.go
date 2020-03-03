@@ -15,12 +15,18 @@ func init() {
 	go pool.Start()
 }
 
+// Index func
+func Index(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "index.html")
+}
+
 // Handler func
 func Handler(w http.ResponseWriter, r *http.Request) {
 	conn, err := websocket.Upgrade(w, r)
 
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	clientID := websocket.GetClientID(r)
