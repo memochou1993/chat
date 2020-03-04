@@ -44,7 +44,7 @@ func (pool *Pool) Start() {
 			message := &Message{
 				ClientID: client.ID,
 				Type:     1,
-				Body:     "User has joined the conversation.",
+				Body:     "Chat started.",
 			}
 			pool.Clients[client] = true
 			notify(pool, client, message)
@@ -54,7 +54,7 @@ func (pool *Pool) Start() {
 			message := &Message{
 				ClientID: client.ID,
 				Type:     1,
-				Body:     "User has left the conversation.",
+				Body:     "Chat has ended.",
 			}
 			notify(pool, client, message)
 			delete(pool.Clients, client)
