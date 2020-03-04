@@ -1,8 +1,6 @@
 package websocket
 
 import (
-	"encoding/base64"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -36,6 +34,17 @@ func NewClient(pool *Pool, conn *websocket.Conn, room *Room, clientID string) *C
 	}
 }
 
+// GetClientID func
+func GetClientID(r *http.Request) string {
+	clientID := r.URL.Query().Get("clientId")
+
+	if clientID == "" {
+		clientID = helper.GetUUID()
+	}
+
+	return clientID
+}
+
 // ReadMessage func
 func (c *Client) ReadMessage() {
 	defer func() {
@@ -60,11 +69,4 @@ func (c *Client) ReadMessage() {
 
 		c.Pool.Broadcast <- message
 	}
-}
-
-// GetClientID func
-func GetClientID(r *http.Request) string {
-	id := fmt.Sprintf("%s: %s", helper.GetHost(r), helper.GetPlatform(r))
-
-	return base64.StdEncoding.EncodeToString([]byte(id))
 }

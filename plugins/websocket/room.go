@@ -1,9 +1,7 @@
 package websocket
 
 import (
-	"log"
-
-	"github.com/google/uuid"
+	"github.com/memochou1993/chat/helper"
 )
 
 // Room struct
@@ -24,6 +22,11 @@ func NewRoom(pool *Pool, clientID string) *Room {
 	room := create(pool, clientID)
 
 	return room
+}
+
+// GetRoomID func
+func GetRoomID() string {
+	return helper.GetUUID()
 }
 
 func find(pool *Pool, clientID string) *Room {
@@ -49,14 +52,8 @@ func assign(pool *Pool, clientID string) *Room {
 }
 
 func create(pool *Pool, clientID string) *Room {
-	id, err := uuid.NewRandom()
-
-	if err != nil {
-		log.Println(err)
-	}
-
 	room := &Room{
-		ID: id.String(),
+		ID: GetRoomID(),
 	}
 
 	pool.RoomRegister <- room
