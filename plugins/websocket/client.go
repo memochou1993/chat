@@ -25,24 +25,15 @@ type Message struct {
 }
 
 // NewClient func
-func NewClient(pool *Pool, conn *websocket.Conn, room *Room, clientID string) *Client {
+func NewClient(pool *Pool, conn *websocket.Conn, r *http.Request) *Client {
+	id := getClientID(r)
+
 	return &Client{
-		ID:   clientID,
-		Room: room,
+		ID:   id,
+		Room: NewRoom(pool, id),
 		Conn: conn,
 		Pool: pool,
 	}
-}
-
-// GetClientID func
-func GetClientID(r *http.Request) string {
-	clientID := r.URL.Query().Get("clientId")
-
-	if clientID == "" {
-		clientID = helper.GetUUID()
-	}
-
-	return clientID
 }
 
 // ReadMessage func
@@ -69,4 +60,14 @@ func (c *Client) ReadMessage() {
 
 		c.Pool.Broadcast <- message
 	}
+}
+
+func getClientID(r *http.Request) string {
+	clientID := r.URL.Query().Get("clientId")
+
+	if clientID == "" {
+		clientID = helper.GetUUID()
+	}
+
+	return clientID
 }

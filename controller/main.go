@@ -24,11 +24,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	clientID := websocket.GetClientID(r)
-
-	room := websocket.NewRoom(pool, clientID)
-
-	client := websocket.NewClient(pool, conn, room, clientID)
+	client := websocket.NewClient(pool, conn, r)
 
 	pool.ClientRegister <- client
 

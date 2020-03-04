@@ -24,11 +24,6 @@ func NewRoom(pool *Pool, clientID string) *Room {
 	return room
 }
 
-// GetRoomID func
-func GetRoomID() string {
-	return helper.GetUUID()
-}
-
 func find(pool *Pool, clientID string) *Room {
 	for client := range pool.Clients {
 		if client.ID == clientID {
@@ -53,10 +48,14 @@ func assign(pool *Pool, clientID string) *Room {
 
 func create(pool *Pool, clientID string) *Room {
 	room := &Room{
-		ID: GetRoomID(),
+		ID: getRoomID(),
 	}
 
 	pool.RoomRegister <- room
 
 	return room
+}
+
+func getRoomID() string {
+	return helper.GetUUID()
 }
