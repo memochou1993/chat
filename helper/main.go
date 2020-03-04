@@ -2,13 +2,22 @@ package helper
 
 import (
 	"log"
-	"net"
-	"net/http"
 	"os"
-	"strings"
 
+	"github.com/google/uuid"
 	_ "github.com/joho/godotenv/autoload" // initialize
 )
+
+// GetUUID func
+func GetUUID() string {
+	uuid, err := uuid.NewRandom()
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return uuid.String()
+}
 
 // GetEnv func
 func GetEnv(name string) string {
@@ -19,31 +28,6 @@ func GetEnv(name string) string {
 	}
 
 	return env
-}
-
-// GetPlatform func
-func GetPlatform(r *http.Request) string {
-	if !IsProduction() {
-		return r.URL.Query().Get("platform")
-	}
-
-	return r.Header.Get("User-Agent")
-}
-
-// GetHost func
-func GetHost(r *http.Request) string {
-	if !IsProduction() {
-		return r.URL.Query().Get("host")
-	}
-
-	host, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr))
-
-	if err != nil {
-		log.Println(err)
-		return ""
-	}
-
-	return host
 }
 
 // IsLocal func
