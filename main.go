@@ -10,5 +10,5 @@ import (
 func main() {
 	http.HandleFunc("/", controller.Handler)
 
-	log.Fatal(http.ListenAndServe(":8082", nil))
+	log.Fatal(http.ListenAndServe(":82", nil))
 }
