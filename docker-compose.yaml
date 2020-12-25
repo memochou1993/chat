@@ -3,11 +3,9 @@ version: "3"
 services:
   app:
     container_name: chat-server
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
+    restart: always
     env_file:
       - .env
     ports:
-      - "82:82"
-    restart: always
+      - "${APP_PORT}:80"
