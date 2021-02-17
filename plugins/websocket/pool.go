@@ -47,7 +47,7 @@ func (pool *Pool) Start() {
 				Body:     "Chat started.",
 			}
 			pool.Clients[client] = true
-			notify(pool, client, message)
+			pool.notify(client, message)
 			break
 
 		case client := <-pool.ClientUnregister:
@@ -56,17 +56,17 @@ func (pool *Pool) Start() {
 				Type:     1,
 				Body:     "Chat has ended.",
 			}
-			notify(pool, client, message)
+			pool.notify(client, message)
 			delete(pool.Clients, client)
 			break
 
 		case message := <-pool.Broadcast:
-			broadcast(pool, message)
+			pool.broadcast(message)
 		}
 	}
 }
 
-func notify(pool *Pool, c *Client, message *Message) {
+func (pool *Pool) notify(c *Client, message *Message) {
 	self := 0
 
 	for client := range pool.Clients {
@@ -90,7 +90,7 @@ func notify(pool *Pool, c *Client, message *Message) {
 	}
 }
 
-func broadcast(pool *Pool, message Message) {
+func (pool *Pool) broadcast(message Message) {
 	for client := range pool.Clients {
 		if client.Room.ID != message.RoomID {
 			continue
