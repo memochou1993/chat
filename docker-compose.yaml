@@ -2,7 +2,7 @@ version: "3"
 
 services:
   app:
-    container_name: chat-server
+    container_name: chat
     build: .
     restart: always
     env_file:
